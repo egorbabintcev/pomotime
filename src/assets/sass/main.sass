@@ -1,0 +1,39 @@
+// Importing utils
+  
+@import 'utils/variables'
+@import 'utils/mixins'
+@import 'utils/grid'
+
+// Importing templates
+
+@import 'templates/base'
+
+#root
+  @extend %flex
+  justify-content: center
+
+.calc
+  @extend %flex
+  flex-direction: column
+  align-items: stretch
+  // max-width: 241px
+  margin: 0 auto
+  &-display
+    display: inline-flex
+    align-items: center
+    height: 60px
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.25)
+
+    font-size: 1.8rem
+  &-inputs
+    & button
+      width: 60px
+      height: 60px
+      padding: 
+      border: none
+      background-color: #ff9f50
+
+      font-size: 1.6em  
+      &:hover
+        transition: .5s ease
+        background-color: #ffb350    
