@@ -8,3 +8,39 @@
 // Importing templates
 
 @import 'templates/base' 
+
+
+.timer
+  @extend %flex
+  flex-direction: column
+  align-items: center
+  &-display
+    margin-bottom: 30px
+    width: 200px
+    height: 200px
+    @extend %flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    background-color: #7cbad3
+    border-radius: 50%
+    & span
+      margin-bottom: 15px
+      font:
+        size: 2rem
+  &-controls
+    @extend %flex
+  &-controller
+    &:first-child
+      margin-right: 25px
+    &__button
+      width: 30px
+      height: 30px
+      font-size: 1.4rem
+      cursor: pointer
+      background-color: #7cbad3
+    & span
+      margin: 0 10px
+      font:
+        size: 1.8rem
+        weight: 700
