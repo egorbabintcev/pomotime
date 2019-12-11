@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 
+import TimerController from './timerController.jsx';
+
 class TimerDuration extends Component {
   render() {
     return (
       <div className="timer-duration">
-        <button className="timer-duration__button" onClick={this.props.decrementTime}>-</button>
-        <span className="timer-duration__time">{this.props.time}</span>
-        <button className="timer-duration__button" onClick={this.props.incrementTime}>+</button>
+        <TimerController 
+          time={this.props.worktime} 
+          incTime={this.props.incTime.bind(this, 'worktime')}
+          decTime={this.props.decTime.bind(this, 'worktime')} />  
+        <TimerController
+          time={this.props.breaktime} 
+          incTime={this.props.incTime.bind(this, 'breaktime')}
+          decTime={this.props.decTime.bind(this, 'breaktime')} />
       </div>      
     )
   }
