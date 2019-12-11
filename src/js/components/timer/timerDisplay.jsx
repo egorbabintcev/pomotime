@@ -4,8 +4,7 @@ class TimerDisplay extends Component {
   render() {
     return (
       <div className="timer-display">
-        <span className="timer-display__countdown">{this.props.currentTime}</span>
-        <span>{this.props.cycle}</span>
+        <span className="timer-display__countdown">{this.props.time}</span>        
       </div>
     )
   }
