@@ -23,6 +23,9 @@ class TimerControls extends Component {
         <button className="timer-controls__button" onClick={this.props.stop}>
           <i className="fas fa-pause timer-controls__button-icon"></i>
         </button>
+        <button className="timer-controls__button" onClick={this.props.reset}>
+          <i className="fas fa-stop timer-controls__button-icon"></i>
+        </button>
       </div>
     )
   }
