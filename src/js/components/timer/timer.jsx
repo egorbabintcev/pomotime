@@ -4,15 +4,26 @@ import TimerDisplay from './timerDisplay.jsx';
 import TimerDuration from './timerDuration.jsx';
 import TimerControls from './timerControls.jsx';
 
+function alarmSound(link = "https://cs9-10v4.vkuseraudio.net/p20/51f3701fcbd4b4.mp3?extra=EEMsn4ks8VieFPoqK-tfmkVZ98-kQxZZf0OzWTQ_vyZ9SH1UrSLHL5ibpYBQCDKbaOjIvGqt9DkhAZAxzQpsB_17ct3tfqrfBElRoQFWZ6s_lvW_0skJIkp1iGHePgVchnhMviJVZqB1GJl_sYPGXQ") {
+  const audio = new Audio(link);
+  audio.play();
+  setTimeout(() => {
+    audio.pause();
+    audio.currentTime = 0;
+  }, 5000);
+}
+
 class Timer extends Component {
   constructor(props) {
     super(props);    
     this.state = {
       worktime: 25,
-      breaktime: 5,      
+      shortbreaktime: 5,
+      longbreaktime: 30,
       minLeft: '25',
       secLeft: '00',
-      cycle: 'work'
+      cycle: 'work',
+      sessionCount: 0,
     };
     this.isRunning = false;
 
@@ -25,9 +36,7 @@ class Timer extends Component {
   }
 
   startTimer() {            
-    let time = parseInt(this.state.minLeft) * 60 + parseInt(this.state.secLeft);    
-    if (time <= 0) return;
-
+    let time = parseInt(this.state.minLeft) * 60 + parseInt(this.state.secLeft);        
     this.isRunning = true;   
 
     function tick() {
@@ -36,13 +45,29 @@ class Timer extends Component {
       if (--time <= 0) {        
         clearInterval(this.timerId);        
         if (this.state.cycle === 'work') {               
-          this.setCurrentTime(this.state.breaktime, 0);
-          this.startTimer();
-          this.setState({ cycle: 'break' });
+          if (this.state.sessionCount === 4) {
+            this.setCurrentTime(this.state.longbreaktime, 0);            
+            this.setState({              
+              cycle: 'longbreak',
+              sessionCount: 0
+            });
+            return;
+          }
+          this.setCurrentTime(this.state.shortbreaktime, 0);                  
+          this.setState({            
+            cycle: 'shortbreak'            
+          });
         } else {                    
-          this.setCurrentTime(this.state.worktime, 0);
-          this.startTimer({ cycle: 'work' });
+          this.setCurrentTime(this.state.worktime, 0);          
+          this.setState(state => {
+            return {
+              cycle: 'work',
+              sessionCount: state.sessionCount + 1
+            }
+          })
         }
+        alarmSound();
+        this.startTimer();
       }      
       this.setCurrentTime(min, sec);      
     }
@@ -57,7 +82,7 @@ class Timer extends Component {
     clearInterval(this.timerId);
   }
 
-  resetTimer() {
+  resetTimer() {    
     this.isRunning = false;
     clearInterval(this.timerId);
     this.setState({ cycle: 'work' });
@@ -75,7 +100,7 @@ class Timer extends Component {
 
   decrementTime(type) {
     const newTime = this.state[type] - 1;
-    if (newTime < 0 || this.isRunning) return;      
+    if (newTime < 1 || this.isRunning) return;      
     this.setState(state => {      
       return { 
         [type]: newTime        
@@ -106,7 +131,8 @@ class Timer extends Component {
           incTime={this.incrementTime}
           decTime={this.decrementTime}
           worktime={this.state.worktime}
-          breaktime={this.state.breaktime} />
+          shortbreaktime={this.state.shortbreaktime}
+          longbreaktime={this.state.longbreaktime} />
         <TimerDisplay 
           minLeft={this.state.minLeft}
           secLeft={this.state.secLeft}
