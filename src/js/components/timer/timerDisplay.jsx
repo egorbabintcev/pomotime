@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { format } from 'path';
 
 class TimerDisplay extends Component {
-  render() {    
+  render() {
     const formattedTime = `${this.props.minLeft} : ${this.props.secLeft}`;
     let formattedCycle;
     const cycle = this.props.cycle;
@@ -16,8 +15,8 @@ class TimerDisplay extends Component {
 
     return (
       <div className="timer-display">
-        <span className="timer-display__countdown">{formattedTime}</span>   
-        <span className="timer-display__cycle">{formattedCycle}</span>     
+        <span className="timer-display__countdown">{formattedTime}</span>
+        <span className="timer-display__cycle">{formattedCycle}</span>
       </div>
     )
   }
