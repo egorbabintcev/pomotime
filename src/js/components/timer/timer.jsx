@@ -10,12 +10,10 @@ class Timer extends Component {
     this.state = {
       worktime: 25,
       breaktime: 5,      
-      timerId: 0,
       minLeft: '25',
       secLeft: '00',
       cycle: 'work'
     };
-    this.isStarted = false;
     this.isRunning = false;
 
     this.decrementTime = this.decrementTime.bind(this);
@@ -26,34 +24,31 @@ class Timer extends Component {
     this.resetTimer = this.resetTimer.bind(this);
   }
 
-  startTimer(duration) {    
-    let time;
-    if (this.isStarted) {      
-      time = this.state.minLeft * 60 + +this.state.secLeft;      
-    } else {
-      time = duration * 60 - 1;
-      this.isStarted = true;
-    }
-
+  startTimer() {            
+    let time = parseInt(this.state.minLeft) * 60 + parseInt(this.state.secLeft);    
     if (time <= 0) return;
 
     this.isRunning = true;   
-    let timer = setInterval(() => {      
+
+    function tick() {
       let min = Math.floor(time / 60);
-      let sec = time % 60;
-      this.setCurrentTime(min, sec);
-      if (--time <= 0) {
-        clearInterval(this.timerId);
-        this.isStarted = false;
-        if (this.state.cycle === 'work') {
+      let sec = time % 60;      
+      if (--time <= 0) {        
+        clearInterval(this.timerId);        
+        if (this.state.cycle === 'work') {               
+          this.setCurrentTime(this.state.breaktime, 0);
+          this.startTimer();
           this.setState({ cycle: 'break' });
-          this.startTimer(this.state.breaktime);
-        } else {
-          this.setState({ cycle: 'work' });
-          this.startTimer(this.state.worktime);
+        } else {                    
+          this.setCurrentTime(this.state.worktime, 0);
+          this.startTimer({ cycle: 'work' });
         }
       }      
-    }, 1000)
+      this.setCurrentTime(min, sec);      
+    }
+
+    tick.call(this);
+    let timer = setInterval(tick.bind(this), 1000);
     this.timerId = timer;
   }
 
@@ -79,29 +74,29 @@ class Timer extends Component {
   }
 
   decrementTime(type) {
-    const newTime = +this.state[type] - 1;
-    if (newTime < 0 || this.isRunning) return;  
-    if (type === 'worktime') {
-      this.setState({ minLeft: newTime });
-    }
+    const newTime = this.state[type] - 1;
+    if (newTime < 0 || this.isRunning) return;      
     this.setState(state => {      
       return { 
         [type]: newTime        
       };
-    })
+    })    
+    if (type === 'worktime') {
+      this.setCurrentTime(newTime, 0);
+    }
   }
 
   incrementTime(type) {    
-    const newTime = +this.state[type] + 1;    
-    if(this.isRunning) return;
-    if (type === 'worktime') {
-      this.setState({ minLeft: newTime });
-    }    
+    const newTime = this.state[type] + 1;    
+    if(this.isRunning) return;       
     this.setState(state => {      
       return { 
         [type]: newTime     
       };
     })
+    if (type === 'worktime') {
+      this.setCurrentTime(newTime, 0);
+    }
   }
 
   render() {
@@ -113,13 +108,10 @@ class Timer extends Component {
           worktime={this.state.worktime}
           breaktime={this.state.breaktime} />
         <TimerDisplay 
-          minsLeft={this.state.minLeft}
-          secsLeft={this.state.secLeft}
+          minLeft={this.state.minLeft}
+          secLeft={this.state.secLeft}
           cycle={this.state.cycle} />        
-        <TimerControls
-          worktime={this.state.worktime}
-          breaktime={this.state.breaktime}
-          cycle={this.state.cycle}
+        <TimerControls                    
           start={this.startTimer}
           stop={this.stopTimer}
           reset={this.resetTimer} />
