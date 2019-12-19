@@ -20,8 +20,8 @@ class Timer extends Component {
       worktime: 25,
       shortbreaktime: 5,
       longbreaktime: 30,
-      minLeft: '00',
-      secLeft: '05',
+      minLeft: '25',
+      secLeft: '00',
       cycle: 'work',
       sessionCount: 0,
     };
